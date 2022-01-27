@@ -1,7 +1,9 @@
 [package]
 name = "ss58-org"
-version = "0.0.1"
+version = "0.0.2"
 edition = "2021"
 
 [dependencies]
+base58 = "0.2.0"
+hex = "0.4.3"
 yew = "0.19.3"
