@@ -1,5 +1,6 @@
 use base58::FromBase58;
 use js_sys::Date;
+use web_sys::{Document, HtmlInputElement};
 use yew::prelude::*;
 
 const SS58_LEN: usize = 35;
@@ -13,8 +14,10 @@ pub enum Message {
 #[derive(Default)]
 pub struct App {
     address: String,
+    address_ref: NodeRef,
     error: String,
     key: String,
+    key_ref: NodeRef,
     year: u32,
 }
 
@@ -31,6 +34,7 @@ impl App {
             <div class="control">
                 <input class={ class }
                     placeholder="e.g. 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"
+                    ref={ self.address_ref.clone() }
                     value={ self.address.clone() } />
             </div>
         }
@@ -79,10 +83,10 @@ impl Component for App {
     fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             Message::Convert => {
-                self.address.clear();
-                self.error.clear();
-                self.key.clear();
-                self.error = "Not implemented yet, coming soon".to_string();
+                if let Some(address_input) = self.address_ref.cast::<HtmlInputElement>() {
+                    self.address = address_input.value();
+                }
+                self.convert();
                 true
             }
             Message::Alice => {
@@ -96,7 +100,21 @@ impl Component for App {
                 self.key.clear();
                 true
             }
-            Message::Copy => false,
+            Message::Copy => {
+                if let Some(key_field) = self.key_ref.cast::<HtmlInputElement>() {
+                    let key = key_field.value();
+                    key_field.select();
+
+                    if let Ok(document) = Document::new() {
+                        if let Some(window) = document.default_view() {
+                            if let Some(clipboard) = window.navigator().clipboard() {
+                                let _ = clipboard.write_text(&key);
+                            }
+                        }
+                    }
+                }
+                false
+            }
         }
     }
 
@@ -140,7 +158,9 @@ impl Component for App {
                     <label class="label">{ "Public Key" }</label>
                     <div class="field has-addons">
                         <div class="control is-expanded">
-                            <input class="input is-info" type="text" readonly=true value={ self.key.clone() }/>
+                            <input class="input is-info" type="text" readonly=true
+                                ref={ self.key_ref.clone() }
+                                value={ self.key.clone() } />
                         </div>
                         <div class="control">
                             <button class="button is-info is-outlined" onclick={ ctx.link().callback(|_| Message::Copy) }>

@@ -1,6 +1,6 @@
 [package]
 name = "ss58-org"
-version = "0.0.3"
+version = "0.0.4"
 edition = "2021"
 
 [dependencies]
@@ -8,3 +8,7 @@ base58 = "0.2.0"
 hex = "0.4.3"
 js-sys = "0.3.56"
 yew = "0.19.3"
+
+[dependencies.web-sys]
+version = "0.3.56"
+features = ["Clipboard", "Document", "HtmlInputElement", "Navigator", "Window"]
