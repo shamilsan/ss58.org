@@ -1,6 +1,6 @@
 use base58::FromBase58;
 use js_sys::Date;
-use web_sys::{Document, HtmlInputElement};
+use web_sys::HtmlInputElement;
 use yew::prelude::*;
 
 const SS58_LEN: usize = 35;
@@ -50,21 +50,29 @@ impl App {
         }
     }
 
-    fn convert(&mut self) {
-        self.error.clear();
-        let res = self.address.from_base58();
-        match res {
-            Ok(key) => {
-                let len = key.len();
+    fn address_to_key(address: &str) -> Result<String, String> {
+        address
+            .from_base58()
+            .map_err(|e| format!("Base58 conversion error: {:?}", e))
+            .and_then(|address| {
+                let len = address.len();
                 if len == SS58_LEN {
-                    let public_key = &key[1..33];
+                    let public_key = &address[1..33];
                     let hex_public_key = hex::encode(public_key);
-                    self.key = format!("0x{}", &hex_public_key);
+                    Ok(format!("0x{}", &hex_public_key))
                 } else {
-                    self.error = "SS58 address has wrong length".to_string();
+                    Err("SS58 address has wrong length".to_string())
                 }
+            })
+    }
+
+    fn convert(&mut self) {
+        match Self::address_to_key(&self.address) {
+            Ok(key) => {
+                self.error.clear();
+                self.key = key;
             }
-            Err(e) => self.error = format!("Base58 conversion error: {:?}", e),
+            Err(e) => self.error = e,
         }
     }
 }
@@ -104,14 +112,10 @@ impl Component for App {
                 if let Some(key_field) = self.key_ref.cast::<HtmlInputElement>() {
                     let key = key_field.value();
                     key_field.select();
-
-                    if let Ok(document) = Document::new() {
-                        if let Some(window) = document.default_view() {
-                            if let Some(clipboard) = window.navigator().clipboard() {
-                                let _ = clipboard.write_text(&key);
-                            }
-                        }
-                    }
+                    gloo_utils::document()
+                        .default_view()
+                        .and_then(|win| win.navigator().clipboard())
+                        .map(|clipboard| clipboard.write_text(&key));
                 }
                 false
             }
