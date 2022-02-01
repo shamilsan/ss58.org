@@ -51,41 +51,39 @@ impl Component for App {
         let encoder_active = self.mode == Mode::EncoderMode;
         let decoder_active = self.mode == Mode::DecoderMode;
         html! {
-            <>
-
-            <div class="box">
-                <div class="tabs is-centered is-boxed">
-                    <ul>
-                        <li class={ if encoder_active { "is-active" } else { "" } }>
-                            <a onclick={ ctx.link().callback(|_| Msg::ToEncoder) }>
-                                <span>{ " Key" }</span>
-                                <span class="icon"><i class="fas fa-arrow-circle-right" aria-hidden="true"></i></span>
-                                <span>{ "Address " }</span>
-                            </a>
-                        </li>
-                        <li class={ if decoder_active { "is-active" } else { "" } }>
-                            <a onclick={ ctx.link().callback(|_| Msg::ToDecoder) }>
-                                <span>{ "Address " }</span>
-                                <span class="icon"><i class="fas fa-arrow-circle-right" aria-hidden="true"></i></span>
-                                <span>{ " Key" }</span>
-                            </a>
-                        </li>
-                    </ul>
+            <div class="container">
+                <div class="box">
+                    <div class="tabs is-centered is-boxed">
+                        <ul>
+                            <li class={ if encoder_active { "is-active" } else { "" } }>
+                                <a onclick={ ctx.link().callback(|_| Msg::ToEncoder) }>
+                                    <span>{ " Key" }</span>
+                                    <span class="icon"><i class="fas fa-arrow-circle-right" aria-hidden="true"></i></span>
+                                    <span>{ "Address " }</span>
+                                </a>
+                            </li>
+                            <li class={ if decoder_active { "is-active" } else { "" } }>
+                                <a onclick={ ctx.link().callback(|_| Msg::ToDecoder) }>
+                                    <span>{ "Address " }</span>
+                                    <span class="icon"><i class="fas fa-arrow-circle-right" aria-hidden="true"></i></span>
+                                    <span>{ " Key" }</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <Encoder active={ encoder_active } />
+                    <Decoder active={ decoder_active } />
                 </div>
-                <Encoder active={ encoder_active } />
-                <Decoder active={ decoder_active } />
-            </div>
 
-            <div class="content is-small has-text-centered">
-                { "Version: " }<strong>{ env!("CARGO_PKG_VERSION") }</strong>
-                { " • Source: " }
-                <strong>
-                    <a href="https://github.com/shamilsan/ss58.org" target="_blank">{ "GitHub" }</a>
-                </strong>
-                { " • © 2021–" }{ self.year }{ " Shamil" }
+                <div class="content is-small has-text-centered">
+                    { "Version: " }<strong>{ env!("CARGO_PKG_VERSION") }</strong>
+                    { " • Source: " }
+                    <strong>
+                        <a href="https://github.com/shamilsan/ss58.org" target="_blank">{ "GitHub" }</a>
+                    </strong>
+                    { " • © 2021–" }{ self.year }{ " Shamil" }
+                </div>
             </div>
-
-            </>
         }
     }
 }
