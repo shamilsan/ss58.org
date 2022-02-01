@@ -20,11 +20,9 @@ jobs:
           profile: minimal
 
       - name: Install trunk
-        uses: actions-rs/install@v0.1
+        uses: jetli/trunk-action@v0.1.0
         with:
-          crate: trunk
           version: latest
-          use-tool-cache: true
 
       - name: Build
         run: trunk build --release
