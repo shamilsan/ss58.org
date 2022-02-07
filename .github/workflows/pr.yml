@@ -1,6 +1,6 @@
-name: Publish
+name: PR
 on:
-  push:
+  pull_request:
     branches: [master]
 
 jobs:
@@ -28,7 +28,7 @@ jobs:
         run: sudo apt-get install -y wabt
 
       - name: Build
-        run: trunk build --release
+        run: trunk build --release --public-url=/pr-${{ github.event.number }}/
 
       - name: Strip WASM
         run: wasm-strip dist/*.wasm
@@ -38,7 +38,4 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: dist
-          cname: ss58.org
-          force_orphan: true
-          user_name: 'github-actions[bot]'
-          user_email: 'github-actions[bot]@users.noreply.github.com'
+          destination_dir: pr-${{ github.event.number }}
