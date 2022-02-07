@@ -1,4 +1,4 @@
-name: Publish
+name: PR
 on:
   pull_request:
     branches: [master]
@@ -23,6 +23,9 @@ jobs:
         uses: jetli/trunk-action@v0.1.0
         with:
           version: latest
+
+      - name: Install WASM Binary Toolkit
+        run: sudo apt install -y wabt
 
       - name: Patch URL
         run: |
