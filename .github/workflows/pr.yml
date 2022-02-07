@@ -1,0 +1,43 @@
+name: Publish
+on:
+  pull_request:
+    branches: [master]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: wasm32-unknown-unknown
+          override: true
+          profile: minimal
+
+      - name: Install trunk
+        uses: jetli/trunk-action@v0.1.0
+        with:
+          version: latest
+
+      - name: Patch URL
+        run: |
+          sed -i "s#data-trunk-public-url /#data-trunk-public-url /pr-${{ github.event.number }}/#" index.html
+          cat index.html | grep data-trunk-public-url
+
+      - name: Build
+        run: trunk build --release
+
+      - name: Strip WASM
+        run: wasm-strip dist/*.wasm
+
+      - name: Publish
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: dist
+          destination_dir: pr-${{ github.event.number }}
