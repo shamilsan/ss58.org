@@ -25,7 +25,7 @@ jobs:
           version: latest
 
       - name: Install WASM Binary Toolkit
-        run: sudo apt install -y wabt
+        run: sudo apt-get install -y wabt
 
       - name: Build
         run: trunk build --release --public-url=/pr-${{ github.event.number }}/

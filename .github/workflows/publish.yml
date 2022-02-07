@@ -24,8 +24,14 @@ jobs:
         with:
           version: latest
 
+      - name: Install WASM Binary Toolkit
+        run: sudo apt-get install -y wabt
+
       - name: Build
         run: trunk build --release
+
+      - name: Strip WASM
+        run: wasm-strip dist/*.wasm
 
       - name: Publish
         uses: peaceiris/actions-gh-pages@v3
