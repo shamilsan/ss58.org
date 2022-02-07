@@ -27,13 +27,8 @@ jobs:
       - name: Install WASM Binary Toolkit
         run: sudo apt install -y wabt
 
-      - name: Patch URL
-        run: |
-          sed -i "s#data-trunk-public-url /#data-trunk-public-url /pr-${{ github.event.number }}/#" index.html
-          cat index.html | grep data-trunk-public-url
-
       - name: Build
-        run: trunk build --release
+        run: trunk build --release --public-url=/pr-${{ github.event.number }}/
 
       - name: Strip WASM
         run: wasm-strip dist/*.wasm
