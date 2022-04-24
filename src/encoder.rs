@@ -195,8 +195,14 @@ impl Encoder {
 
         let raw_key = hex::decode(formatted_key);
         match raw_key {
+            Err(e) => Err(format!("Hex decoding error: {:?}", e)),
             Ok(mut raw_key) => {
-                if raw_key.len() == 32 {
+                if raw_key.len() != 32 {
+                    Err(format!(
+                        "Public key has wrong length: {} != 32",
+                        raw_key.len()
+                    ))
+                } else {
                     let mut hasher = Blake2b512::new();
                     hasher.update(b"SS58PRE");
                     let simple_prefix: u8 = (prefix & 0x3F) as _;
@@ -223,24 +229,18 @@ impl Encoder {
                     raw_address.extend_from_slice(&checksum[0..2]);
 
                     Ok(raw_address[..].to_base58())
-                } else {
-                    Err(format!(
-                        "Public key has wrong length: {} != 32",
-                        raw_key.len()
-                    ))
                 }
             }
-            Err(e) => Err(format!("Hex decoding error: {:?}", e)),
         }
     }
 
     fn convert(&mut self) {
         match Self::key_to_address(self.prefix, &self.key) {
+            Err(e) => self.error = e,
             Ok(address) => {
                 self.error.clear();
                 self.address = address;
             }
-            Err(e) => self.error = e,
         }
     }
 }

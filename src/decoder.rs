@@ -54,6 +54,7 @@ impl Component for Decoder {
             Msg::Clear => {
                 self.address.clear();
                 self.error.clear();
+                self.prefix = 0;
                 self.key.clear();
                 true
             }
@@ -149,7 +150,7 @@ impl Decoder {
             .from_base58()
             .map_err(|e| format!("Base58 conversion error: {:?}", e))?;
         let len = address.len();
-        if len < SS58_MIN_LEN || len > SS58_MAX_LEN {
+        if !(SS58_MIN_LEN..=SS58_MAX_LEN).contains(&len) {
             Err("SS58 address has wrong length".to_string())
         } else {
             let _checksum = &address[len - 2..len];
@@ -169,12 +170,12 @@ impl Decoder {
 
     fn convert(&mut self) {
         match Self::address_to_key(&self.address) {
+            Err(e) => self.error = e,
             Ok((prefix, key)) => {
                 self.error.clear();
                 self.prefix = prefix;
                 self.key = key;
             }
-            Err(e) => self.error = e,
         }
     }
 }
