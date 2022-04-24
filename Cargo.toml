@@ -1,6 +1,6 @@
 [package]
 name = "ss58-org"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 
 [dependencies]
@@ -12,4 +12,4 @@ yew = "0.19.3"
 
 [dependencies.web-sys]
 version = "0.3.56"
-features = ["Clipboard", "Document", "HtmlInputElement", "Navigator", "Window"]
+features = ["Clipboard", "Document", "HtmlInputElement", "HtmlSelectElement", "Navigator", "Window"]
