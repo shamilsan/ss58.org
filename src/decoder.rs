@@ -4,7 +4,8 @@ use yew::prelude::*;
 
 use crate::copy;
 
-const SS58_LEN: usize = 35;
+const SS58_MIN_LEN: usize = 35;
+const SS58_MAX_LEN: usize = 36;
 
 pub enum Msg {
     Convert,
@@ -23,6 +24,7 @@ pub struct Decoder {
     address: String,
     address_ref: NodeRef,
     error: String,
+    prefix: u16,
     key: String,
     key_ref: NodeRef,
 }
@@ -93,6 +95,9 @@ impl Component for Decoder {
                 <div class="field">
                     <label class="label">{ "Public Key" }</label>
                     <div class="field has-addons">
+                        <div class="control">
+                            <a class="button is-static">{ self.prefix.to_string() }</a>
+                        </div>
                         <div class="control is-expanded">
                             <input class="input is-info" type="text" readonly=true
                                 ref={ self.key_ref.clone() }
@@ -139,26 +144,34 @@ impl Decoder {
         }
     }
 
-    fn address_to_key(address: &str) -> Result<String, String> {
-        address
+    fn address_to_key(address: &str) -> Result<(u16, String), String> {
+        let address = address
             .from_base58()
-            .map_err(|e| format!("Base58 conversion error: {:?}", e))
-            .and_then(|address| {
-                let len = address.len();
-                if len == SS58_LEN {
-                    let public_key = &address[1..33];
-                    let hex_public_key = hex::encode(public_key);
-                    Ok(format!("0x{}", &hex_public_key))
-                } else {
-                    Err("SS58 address has wrong length".to_string())
-                }
-            })
+            .map_err(|e| format!("Base58 conversion error: {:?}", e))?;
+        let len = address.len();
+        if len < SS58_MIN_LEN || len > SS58_MAX_LEN {
+            Err("SS58 address has wrong length".to_string())
+        } else {
+            let _checksum = &address[len - 2..len];
+            let key = format!("0x{}", hex::encode(&address[len - 34..len - 2]));
+            let prefix_buf = &address[0..len - 34];
+            let prefix = if prefix_buf.len() == 1 {
+                prefix_buf[0] as u16
+            } else {
+                let prefix_hi = ((prefix_buf[1] & 0x3F) as u16) << 8;
+                let prefix_lo = ((prefix_buf[0] << 2) | (prefix_buf[1] >> 6)) as u16;
+                prefix_hi | prefix_lo
+            };
+
+            Ok((prefix, key))
+        }
     }
 
     fn convert(&mut self) {
         match Self::address_to_key(&self.address) {
-            Ok(key) => {
+            Ok((prefix, key)) => {
                 self.error.clear();
+                self.prefix = prefix;
                 self.key = key;
             }
             Err(e) => self.error = e,
