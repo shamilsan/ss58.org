@@ -161,7 +161,9 @@ impl Decoder {
             hasher.update(&address[0..len - 2]);
             let checksum_calc = &hasher.finalize()[0..2];
             if checksum != checksum_calc {
-                return Err(format!("Invalid checksum: input{checksum:?} not equal to calculated{checksum_calc:?}"));
+                return Err(format!(
+                    "Invalid checksum: input {checksum:?} is not equal to calculated {checksum_calc:?}"
+                ));
             }
 
             // Get the key
