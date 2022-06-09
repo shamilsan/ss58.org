@@ -109,7 +109,7 @@ impl Component for Encoder {
                             </div>
                         </div>
                         <div class="control is-expanded">
-                            <input class="input is-info" type="number" min="0" max="65535"
+                            <input class="input is-info" type="number" min="0" max="16383"
                                 disabled={ !self.custom_prefix } ref={ self.prefix_ref.clone() } value={ self.prefix.to_string() }/>
                         </div>
                     </div>
