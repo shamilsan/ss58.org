@@ -1,4 +1,5 @@
 use base58::FromBase58;
+use blake2::{Blake2b512, Digest};
 use web_sys::HtmlInputElement;
 use yew::prelude::*;
 
@@ -153,8 +154,22 @@ impl Decoder {
         if !(SS58_MIN_LEN..=SS58_MAX_LEN).contains(&len) {
             Err("SS58 address has wrong length".to_string())
         } else {
-            let _checksum = &address[len - 2..len];
+            // Verify the checksum
+            let checksum = &address[len - 2..len];
+            let mut hasher = Blake2b512::new();
+            hasher.update(b"SS58PRE");
+            hasher.update(&address[0..len - 2]);
+            let checksum_calc = &hasher.finalize()[0..2];
+            if checksum != checksum_calc {
+                return Err(format!(
+                    "Invalid checksum: input {checksum:?} is not equal to calculated {checksum_calc:?}"
+                ));
+            }
+
+            // Get the key
             let key = format!("0x{}", hex::encode(&address[len - 34..len - 2]));
+
+            // Get the network prefix
             let prefix_buf = &address[0..len - 34];
             let prefix = if prefix_buf.len() == 1 {
                 prefix_buf[0] as u16
