@@ -25,13 +25,13 @@ jobs:
           version: latest
 
       - name: Install WASM Binary Toolkit
-        run: sudo apt-get install -y wabt
+        run: sudo apt-get install -y binaryen
 
       - name: Build
         run: trunk build --release --public-url=/pr-${{ github.event.number }}/
 
-      - name: Strip WASM
-        run: wasm-strip dist/*.wasm
+      - name: Optimize WASM
+        run: find dist -name "*.wasm" -exec wasm-opt {} -o {} -Oz -c --dae --dce --rse -s 4 --vacuum \;
 
       - name: Publish
         uses: peaceiris/actions-gh-pages@v3
