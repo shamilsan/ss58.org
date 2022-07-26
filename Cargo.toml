@@ -7,7 +7,7 @@ edition = "2021"
 base58 = "0.2.0"
 blake2 = "0.10.4"
 hex = "0.4.3"
-js-sys = "0.3.58"
+js-sys = "0.3.59"
 yew = "0.19.3"
 
 [dependencies.web-sys]
