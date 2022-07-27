@@ -11,5 +11,5 @@ js-sys = "0.3.59"
 yew = "0.19.3"
 
 [dependencies.web-sys]
-version = "0.3.58"
+version = "0.3.59"
 features = ["Clipboard", "Document", "HtmlInputElement", "HtmlSelectElement", "Navigator", "Window"]
