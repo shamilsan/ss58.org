@@ -80,6 +80,7 @@ impl Component for Encoder {
                 self.key.clear();
                 self.error.clear();
                 self.address.clear();
+                self.custom_prefix = false;
                 true
             }
             Msg::Copy => {
@@ -104,6 +105,7 @@ impl Component for Encoder {
                                     <option value="0" selected=true>{ "Polkadot" }</option>
                                     <option value="2">{ "Kusama" }</option>
                                     <option value="42">{ "Substrate" }</option>
+                                    <option value="137">{ "Vara" }</option>
                                     <option value="custom">{ "Custom" }</option>
                                 </select>
                             </div>
