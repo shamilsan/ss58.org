@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 base58 = "0.2.0"
-blake2 = "0.10.5"
+blake2 = "0.10.6"
 hex = "0.4.3"
 js-sys = "0.3.60"
 yew = "0.19.3"
