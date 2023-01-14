@@ -119,16 +119,17 @@ impl Component for Decoder {
 
 impl Decoder {
     fn address_field(&self) -> Html {
-        let mut class = Classes::from("input");
-        if self.error.is_empty() {
-            class.push("is-info");
-        } else {
-            class.push("is-danger");
-        }
-
+        let class = classes!(
+            "input",
+            if self.error.is_empty() {
+                "is-info"
+            } else {
+                "is-danger"
+            }
+        );
         html! {
             <div class="control">
-                <input class={ class }
+                <input { class }
                     placeholder="e.g. 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"
                     ref={ self.address_ref.clone() }
                     value={ self.address.clone() } />
@@ -137,19 +138,18 @@ impl Decoder {
     }
 
     fn error_help(&self) -> Html {
-        let mut class = classes!("help", "is-danger");
-        if self.error.is_empty() {
-            class.push("is-hidden");
-        }
-        html! {
-            <p class={ class }>{ &self.error }</p>
-        }
+        let class = classes!(
+            "help",
+            "is-danger",
+            self.error.is_empty().then_some("is-hidden")
+        );
+        html!(<p { class }>{ &self.error }</p>)
     }
 
     fn address_to_key(address: &str) -> Result<(u16, String), String> {
         let address = address
             .from_base58()
-            .map_err(|e| format!("Base58 conversion error: {:?}", e))?;
+            .map_err(|e| format!("Base58 conversion error: {e:?}"))?;
         let len = address.len();
         if !(SS58_MIN_LEN..=SS58_MAX_LEN).contains(&len) {
             Err("SS58 address has wrong length".to_string())

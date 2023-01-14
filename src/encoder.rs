@@ -51,6 +51,9 @@ impl Component for Encoder {
                         self.prefix = prefix_select.value().parse().unwrap_or_default();
                     }
                 }
+                if let Some(key_input) = self.key_ref.cast::<HtmlInputElement>() {
+                    self.key = key_input.value();
+                }
                 true
             }
             Msg::Convert => {
@@ -161,16 +164,17 @@ impl Component for Encoder {
 
 impl Encoder {
     fn key_field(&self) -> Html {
-        let mut class = Classes::from("input");
-        if self.error.is_empty() {
-            class.push("is-info");
-        } else {
-            class.push("is-danger");
-        }
-
+        let class = classes!(
+            "input",
+            if self.error.is_empty() {
+                "is-info"
+            } else {
+                "is-danger"
+            }
+        );
         html! {
             <div class="control">
-                <input class={ class }
+                <input { class }
                     placeholder="e.g. 0xd43593c715fdd31c61141abd04a99fd6822c8558854ccde39a5684e7a56da27d"
                     ref={ self.key_ref.clone() }
                     value={ self.key.clone() } />
@@ -179,13 +183,12 @@ impl Encoder {
     }
 
     fn error_help(&self) -> Html {
-        let mut class = classes!("help", "is-danger");
-        if self.error.is_empty() {
-            class.push("is-hidden");
-        }
-        html! {
-            <p class={ class }>{ &self.error }</p>
-        }
+        let class = classes!(
+            "help",
+            "is-danger",
+            self.error.is_empty().then_some("is-hidden")
+        );
+        html!(<p { class }>{ &self.error }</p>)
     }
 
     fn key_to_address(prefix: u16, key: &str) -> Result<String, String> {
@@ -197,7 +200,7 @@ impl Encoder {
 
         let raw_key = hex::decode(formatted_key);
         match raw_key {
-            Err(e) => Err(format!("Hex decoding error: {:?}", e)),
+            Err(e) => Err(format!("Hex decoding error: {e:?}")),
             Ok(mut raw_key) => {
                 if raw_key.len() != 32 {
                     Err(format!(
@@ -212,10 +215,10 @@ impl Encoder {
                     let prefix_hi: u8 = (full_prefix >> 8) as _;
                     let prefix_low: u8 = (full_prefix & 0xFF) as _;
                     if prefix == simple_prefix as u16 {
-                        hasher.update(&[simple_prefix]);
+                        hasher.update([simple_prefix]);
                     } else {
-                        hasher.update(&[prefix_hi]);
-                        hasher.update(&[prefix_low]);
+                        hasher.update([prefix_hi]);
+                        hasher.update([prefix_low]);
                     }
                     hasher.update(&raw_key);
                     let checksum = hasher.finalize();
