@@ -1,5 +1,14 @@
 # SS58 Address Format Online Converter
 
+[![Build][build_badge]][build_href]
+[![License][lic_badge]][lic_href]
+
+[build_badge]: https://github.com/shamilsan/ss58.org/workflows/Build/badge.svg
+[build_href]: https://github.com/shamilsan/ss58.org/actions/workflows/build.yml
+
+[lic_badge]: https://img.shields.io/badge/License-MIT-success
+[lic_href]: https://github.com/shamilsan/ss58.org/blob/master/LICENSE
+
 🏹 https://ss58.org
 
 ## Build and Serve Locally

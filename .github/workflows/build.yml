@@ -1,5 +1,7 @@
-name: Publish
+name: Build
 on:
+  pull_request:
+    branches: [master]
   push:
     branches: [master]
 
@@ -27,13 +29,27 @@ jobs:
       - name: Install WASM Binary Toolkit
         run: sudo apt-get install -y binaryen
 
+      - name: Build PR
+        if: github.event_name == 'pull_request'
+        run: trunk build --release --public-url=/pr-${{ github.event.number }}/
+
       - name: Build
+        if: github.event_name == 'push'
         run: trunk build --release
 
       - name: Optimize WASM
         run: find dist -name "*.wasm" -exec wasm-opt {} -o {} -Oz -c --dae --dce --rse -s 4 --vacuum \;
 
+      - name: Publish PR
+        if: github.event_name == 'pull_request' && github.actor != 'dependabot[bot]'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: dist
+          destination_dir: pr-${{ github.event.number }}
+
       - name: Publish
+        if: github.event_name == 'push' && github.actor != 'dependabot[bot]'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
