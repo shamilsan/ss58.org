@@ -79,9 +79,9 @@ impl Component for App {
                     { "Version: " }<strong>{ env!("CARGO_PKG_VERSION") }</strong>
                     { " • Source: " }
                     <strong>
-                        <a href="https://github.com/shamilsan/ss58.org" target="_blank">{ "GitHub" }</a>
+                        <a href="https://github.com/gear-tech/ss58.org" target="_blank">{ "GitHub" }</a>
                     </strong>
-                    { " • © 2021–" }{ self.year }{ " Shamil" }
+                    { " • © 2021–" }{ self.year }{ " Gear Technologies Inc." }
                 </div>
             </div>
         }
