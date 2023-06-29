@@ -3,11 +3,11 @@
 [![Build][build_badge]][build_href]
 [![License][lic_badge]][lic_href]
 
-[build_badge]: https://github.com/shamilsan/ss58.org/workflows/Build/badge.svg
-[build_href]: https://github.com/shamilsan/ss58.org/actions/workflows/build.yml
+[build_badge]: https://github.com/gear-tech/ss58.org/workflows/Build/badge.svg
+[build_href]: https://github.com/gear-tech/ss58.org/actions/workflows/build.yml
 
 [lic_badge]: https://img.shields.io/badge/License-MIT-success
-[lic_href]: https://github.com/shamilsan/ss58.org/blob/master/LICENSE
+[lic_href]: https://github.com/gear-tech/ss58.org/blob/master/LICENSE
 
 🏹 https://ss58.org
 
@@ -26,7 +26,7 @@ rustup target add wasm32-unknown-unknown
 3. Clone the repo:
 
 ```sh
-git clone https://github.com/shamilsan/ss58.org
+git clone https://github.com/gear-tech/ss58.org
 cd ss58.org
 ```
 
