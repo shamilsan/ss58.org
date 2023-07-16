@@ -34,6 +34,7 @@ pub(crate) fn Converter(cx: Scope) -> impl IntoView {
     let networks = NETWORKS.map(|_| create_signal(cx, "".to_string()));
 
     let convert = move || {
+        set_error("".to_string());
         if let Some(element) = input_ref.get() {
             let value = element.value();
             let key = if value.starts_with("0x") {
