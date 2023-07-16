@@ -40,15 +40,15 @@ jobs:
         run: find dist -name "*.wasm" -exec wasm-opt {} -o {} -Oz -c --dae --dce --rse -s 4 --vacuum \;
 
       - name: Setup GitHub Pages
-        # if: github.event_name == 'push'
+        if: github.event_name == 'push'
         uses: actions/configure-pages@v3
 
       - name: Upload Pages artifact
-        # if: github.event_name == 'push'
+        if: github.event_name == 'push'
         uses: actions/upload-pages-artifact@v2
         with:
             path: dist
 
       - name: Deploy to GitHub Pages
-        # if: github.event_name == 'push'
+        if: github.event_name == 'push'
         uses: actions/deploy-pages@v2
