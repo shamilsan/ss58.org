@@ -156,6 +156,7 @@ pub(crate) fn Converter(cx: Scope) -> impl IntoView {
                     <span>"Clear"</span>
                 </button>
             </div>
+
             // Output
             <Address title="Public Key".to_string() value=public_key />
             <Address title="Custom Prefix".to_string() value=custom />
