@@ -17,12 +17,11 @@ fn App(cx: Scope) -> impl IntoView {
             </div>
 
             <div class="content is-small has-text-centered">
-                {"Version: "}<strong>{ env!("CARGO_PKG_VERSION") }</strong>
-                {" • Source: "}
-                <strong>
-                    <a href="https://github.com/gear-tech/ss58.org" target="_blank">"GitHub"</a>
-                </strong>
-                {" • © 2021–"}{year}{" Gear Technologies Inc."}
+                "Version: " <strong>{env!("CARGO_PKG_VERSION")}</strong> " • Source: " <strong>
+                    <a href="https://github.com/gear-tech/ss58.org" target="_blank">
+                        "GitHub"
+                    </a>
+                </strong> " • © 2021–" {year} " Gear Technologies Inc."
             </div>
         </div>
     }
