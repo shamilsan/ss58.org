@@ -15,11 +15,9 @@
 
 0. Install Rust using [rustup](https://rustup.rs/).
 
-1. Install Rust nightly toolchain and Wasm target:
+1. Install Wasm target:
 
 ```
-rustup toolchain install nightly
-rustup default nightly
 rustup target add wasm32-unknown-unknown
 ```
 
