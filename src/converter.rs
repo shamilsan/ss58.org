@@ -1,12 +1,14 @@
 use leptos::{html::Input, *};
+use leptos_router::*;
+use web_sys::KeyboardEvent;
 
 use crate::utils;
 
-const NETWORKS: [(&str, u16); 4] = [
-    ("Polkadot", 0),
-    ("Kusama", 2),
-    ("Substrate", 42),
-    ("Vara", 137),
+const NETWORKS: [(&str, u16, bool); 4] = [
+    ("Polkadot", 0, true),
+    ("Kusama", 2, true),
+    ("Substrate", 42, false),
+    ("Vara", 137, true),
 ];
 
 #[component]
@@ -14,7 +16,10 @@ pub(crate) fn Converter(cx: Scope) -> impl IntoView {
     let (checkbox, set_checkbox) = create_signal(cx, false);
     let checkbox_ref: NodeRef<Input> = create_node_ref(cx);
 
-    let (input, _) = create_signal(cx, "".to_string());
+    let params = use_params_map(cx);
+    let param_input = move || params.with(|params| params.get("input").cloned());
+
+    let (input, _) = create_signal(cx, param_input().unwrap_or_default());
     let input_ref: NodeRef<Input> = create_node_ref(cx);
 
     let (error, set_error) = create_signal(cx, "".to_string());
@@ -77,22 +82,24 @@ pub(crate) fn Converter(cx: Scope) -> impl IntoView {
         convert();
     };
 
-    let on_clear = move |_| {
-        if let Some(element) = input_ref.get() {
-            element.set_value("");
-        }
-        if let Some(element) = checkbox_ref.get() {
-            element.set_checked(false);
-        }
-        if let Some(element) = prefix_ref.get() {
-            element.set_value("0");
-        }
+    let clear = move || {
+        let _ = input_ref.get().map(|element| element.set_value(""));
+        let _ = checkbox_ref.get().map(|element| element.set_checked(false));
+        let _ = prefix_ref.get().map(|element| element.set_value("0"));
         set_checkbox(false);
         set_error("".to_string());
         set_public_key("".to_string());
         set_custom("".to_string());
         for (_, set_network) in networks {
             set_network("".to_string());
+        }
+    };
+
+    let on_keyup = move |e: KeyboardEvent| {
+        if e.key() == "Enter" {
+            convert();
+        } else if e.key() == "Escape" {
+            clear();
         }
     };
 
@@ -109,6 +116,7 @@ pub(crate) fn Converter(cx: Scope) -> impl IntoView {
                         placeholder="e.g. 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"
                         node_ref=input_ref
                         value=input
+                        on:keyup=on_keyup
                     />
                 </div>
                 <p class="help is-danger" class:is-hidden=move || error.with(String::is_empty)>
@@ -164,7 +172,7 @@ pub(crate) fn Converter(cx: Scope) -> impl IntoView {
                     </span>
                     <span>"Alice"</span>
                 </button>
-                <button class="button is-danger" on:click=on_clear>
+                <button class="button is-danger" on:click=move |_| clear()>
                     <span class="icon">
                         <i class="fas fa-times"></i>
                     </span>
@@ -180,7 +188,12 @@ pub(crate) fn Converter(cx: Scope) -> impl IntoView {
                 .enumerate()
                 .map(|(i, (network, _))| {
                     view! { cx,
-                        <Address title=NETWORKS[i].0 prefix=NETWORKS[i].1.into() value=network/>
+                        <Address
+                            title=NETWORKS[i].0
+                            prefix=NETWORKS[i].1.into()
+                            value=network
+                            subscan=NETWORKS[i].2
+                        />
                     }
                 })
                 .collect_view(cx)}
@@ -189,7 +202,13 @@ pub(crate) fn Converter(cx: Scope) -> impl IntoView {
 }
 
 #[component]
-fn Address(cx: Scope, title: &'static str, prefix: MaybeSignal<u16>, value: ReadSignal<String>) -> impl IntoView {
+fn Address(
+    cx: Scope,
+    title: &'static str,
+    prefix: MaybeSignal<u16>,
+    value: ReadSignal<String>,
+    #[prop(optional)] subscan: bool,
+) -> impl IntoView {
     let address_ref: NodeRef<Input> = create_node_ref(cx);
 
     let on_copy = move |_| {
@@ -197,6 +216,14 @@ fn Address(cx: Scope, title: &'static str, prefix: MaybeSignal<u16>, value: Read
             element.select();
             utils::copy(&element.value())
         }
+    };
+
+    let subscan_link = move || {
+        format!(
+            "https://{}.subscan.io/account/{}",
+            title.to_lowercase(),
+            value()
+        )
     };
 
     view! { cx,
@@ -215,6 +242,13 @@ fn Address(cx: Scope, title: &'static str, prefix: MaybeSignal<u16>, value: Read
                                 node_ref=address_ref
                                 value=value
                             />
+                        </div>
+                        <div class="control" hidden=!subscan>
+                            <a class="button is-info is-outlined" href=subscan_link target="_blank">
+                                <span class="icon" alt="Subscan">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                            </a>
                         </div>
                         <div class="control">
                             <button class="button is-info is-outlined" on:click=on_copy>
