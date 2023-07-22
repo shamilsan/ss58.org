@@ -1,5 +1,6 @@
 use js_sys::Date;
 use leptos::*;
+use leptos_router::*;
 
 mod converter;
 use converter::Converter;
@@ -13,7 +14,12 @@ fn App(cx: Scope) -> impl IntoView {
     view! { cx,
         <div class="container">
             <div class="box">
-                <Converter/>
+                <Router>
+                    <Routes>
+                        <Route path="/" view=Converter/>
+                        <Route path=":input" view=Converter/>
+                    </Routes>
+                </Router>
             </div>
 
             <div class="content is-small has-text-centered">
