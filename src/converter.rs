@@ -12,25 +12,25 @@ const NETWORKS: [(&str, u16, bool); 4] = [
 ];
 
 #[component]
-pub(crate) fn Converter(cx: Scope) -> impl IntoView {
-    let (checkbox, set_checkbox) = create_signal(cx, false);
-    let checkbox_ref: NodeRef<Input> = create_node_ref(cx);
+pub(crate) fn Converter() -> impl IntoView {
+    let (checkbox, set_checkbox) = create_signal(false);
+    let checkbox_ref: NodeRef<Input> = create_node_ref();
 
-    let params = use_params_map(cx);
+    let params = use_params_map();
     let param_input = move || params.with(|params| params.get("input").cloned());
 
-    let (input, _) = create_signal(cx, param_input().unwrap_or_default());
-    let input_ref: NodeRef<Input> = create_node_ref(cx);
+    let (input, _) = create_signal(param_input().unwrap_or_default());
+    let input_ref: NodeRef<Input> = create_node_ref();
 
-    let (error, set_error) = create_signal(cx, "".to_string());
+    let (error, set_error) = create_signal("".to_string());
 
-    let (prefix, set_prefix) = create_signal(cx, 0_u16);
-    let prefix_ref: NodeRef<Input> = create_node_ref(cx);
+    let (prefix, set_prefix) = create_signal(0_u16);
+    let prefix_ref: NodeRef<Input> = create_node_ref();
 
-    let (key_prefix, set_key_prefix) = create_signal(cx, 0_u16);
-    let (public_key, set_public_key) = create_signal(cx, "".to_string());
-    let (custom, set_custom) = create_signal(cx, "".to_string());
-    let networks = NETWORKS.map(|_| create_signal(cx, "".to_string()));
+    let (key_prefix, set_key_prefix) = create_signal(0_u16);
+    let (public_key, set_public_key) = create_signal("".to_string());
+    let (custom, set_custom) = create_signal("".to_string());
+    let networks = NETWORKS.map(|_| create_signal("".to_string()));
 
     let convert = move || {
         set_error("".to_string());
@@ -103,7 +103,7 @@ pub(crate) fn Converter(cx: Scope) -> impl IntoView {
         }
     };
 
-    view! { cx,
+    view! {
         <>
             // Input
             <div class="field">
@@ -187,7 +187,7 @@ pub(crate) fn Converter(cx: Scope) -> impl IntoView {
                 .into_iter()
                 .enumerate()
                 .map(|(i, (network, _))| {
-                    view! { cx,
+                    view! {
                         <Address
                             title=NETWORKS[i].0
                             prefix=NETWORKS[i].1.into()
@@ -196,20 +196,19 @@ pub(crate) fn Converter(cx: Scope) -> impl IntoView {
                         />
                     }
                 })
-                .collect_view(cx)}
+                .collect_view()}
         </>
     }
 }
 
 #[component]
 fn Address(
-    cx: Scope,
     title: &'static str,
     prefix: MaybeSignal<u16>,
     value: ReadSignal<String>,
     #[prop(optional)] subscan: bool,
 ) -> impl IntoView {
-    let address_ref: NodeRef<Input> = create_node_ref(cx);
+    let address_ref: NodeRef<Input> = create_node_ref();
 
     let on_copy = move |_| {
         if let Some(element) = address_ref.get() {
@@ -226,7 +225,7 @@ fn Address(
         )
     };
 
-    view! { cx,
+    view! {
         <div hidden=move || value.with(String::is_empty) class="field">
             <label class="label is-small is-family-monospace is-uppercase">
                 {title} ": " {prefix}

@@ -8,10 +8,10 @@ use converter::Converter;
 mod utils;
 
 #[component]
-fn App(cx: Scope) -> impl IntoView {
+fn App() -> impl IntoView {
     let year = Date::new_0().get_full_year();
 
-    view! { cx,
+    view! {
         <div class="container">
             <div class="box">
                 <Router>
