@@ -7,12 +7,12 @@ edition = "2021"
 base58 = "0.2.0"
 blake2 = "0.10.6"
 hex = "0.4.3"
-js-sys = "0.3.65"
+js-sys = "0.3.66"
 leptos = { version = "0.5.3", features = ["csr", "nightly"] }
-leptos_router = { version = "0.5.2", features = ["csr", "nightly"] }
+leptos_router = { version = "0.5.3", features = ["csr", "nightly"] }
 
 [dependencies.web-sys]
-version = "0.3.64"
+version = "0.3.65"
 features = [
     "Clipboard",
     "Document",
