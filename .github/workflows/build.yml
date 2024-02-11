@@ -9,6 +9,9 @@ permissions:
   id-token: write
   pages: write
 
+env:
+  RUSTFLAGS: --cfg=web_sys_unstable_apis
+
 jobs:
   publish:
     runs-on: ubuntu-latest

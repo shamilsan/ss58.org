@@ -33,44 +33,44 @@ pub(crate) fn Converter() -> impl IntoView {
     let networks = NETWORKS.map(|_| create_signal("".to_string()));
 
     let convert = move || {
-        set_error("".to_string());
+        set_error.set("".to_string());
         if let Some(element) = prefix_ref.get() {
             let value = element.value();
-            set_prefix(value.parse().unwrap_or_default());
+            set_prefix.set(value.parse().unwrap_or_default());
         }
         if let Some(element) = input_ref.get() {
             let value = element.value();
             let key = if value.starts_with("0x") {
-                set_public_key("".to_string());
+                set_public_key.set("".to_string());
                 value
             } else {
                 let res = utils::address_to_key(&value);
                 if let Err(err) = res {
-                    set_error(err);
+                    set_error.set(err);
                     return;
                 }
                 let (prefix, key) = res.unwrap();
-                set_key_prefix(prefix);
-                set_public_key(key);
-                public_key()
+                set_key_prefix.set(prefix);
+                set_public_key.set(key);
+                public_key.get()
             };
-            if checkbox() {
-                let res = utils::key_to_address(prefix(), &key);
+            if checkbox.get() {
+                let res = utils::key_to_address(prefix.get(), &key);
                 if let Err(err) = res {
-                    set_error(err);
+                    set_error.set(err);
                     return;
                 }
-                set_custom(res.unwrap());
+                set_custom.set(res.unwrap());
             } else {
-                set_custom("".to_string());
+                set_custom.set("".to_string());
             }
             for (i, (_, set_network)) in networks.iter().enumerate() {
                 let res = utils::key_to_address(NETWORKS[i].1, &key);
                 if let Err(err) = res {
-                    set_error(err);
+                    set_error.set(err);
                     return;
                 }
-                set_network(res.unwrap());
+                set_network.set(res.unwrap());
             }
         }
     };
@@ -86,12 +86,12 @@ pub(crate) fn Converter() -> impl IntoView {
         let _ = input_ref.get().map(|element| element.set_value(""));
         let _ = checkbox_ref.get().map(|element| element.set_checked(false));
         let _ = prefix_ref.get().map(|element| element.set_value("0"));
-        set_checkbox(false);
-        set_error("".to_string());
-        set_public_key("".to_string());
-        set_custom("".to_string());
+        set_checkbox.set(false);
+        set_error.set("".to_string());
+        set_public_key.set("".to_string());
+        set_custom.set("".to_string());
         for (_, set_network) in networks {
-            set_network("".to_string());
+            set_network.set("".to_string());
         }
     };
 
@@ -221,7 +221,7 @@ fn Address(
         format!(
             "https://{}.subscan.io/account/{}",
             title.to_lowercase(),
-            value()
+            value.get()
         )
     };
 
