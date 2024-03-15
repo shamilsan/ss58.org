@@ -24,10 +24,10 @@ fn App() -> impl IntoView {
 
             <div class="content is-small has-text-centered">
                 "Version: " <strong>{env!("CARGO_PKG_VERSION")}</strong> " • Source: " <strong>
-                    <a href="https://github.com/gear-tech/ss58.org" target="_blank">
+                    <a href="https://github.com/shamilsan/ss58.org" target="_blank">
                         "GitHub"
                     </a>
-                </strong> " • © 2021–" {year} " Gear Technologies Inc."
+                </strong> " • © 2021–" {year} " Shamil"
             </div>
         </div>
     }

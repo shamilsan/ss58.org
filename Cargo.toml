@@ -1,18 +1,18 @@
 [package]
 name = "ss58-org"
-version = "0.2.2"
+version = "0.2.3"
 edition = "2021"
 
 [dependencies]
-base58 = "0.2.0"
-blake2 = "0.10.6"
-hex = "0.4.3"
-js-sys = "0.3.69"
-leptos = { version = "0.6.9", features = ["csr"] }
-leptos_router = { version = "0.6.9", features = ["csr"] }
+base58 = "0.2"
+blake2 = "0.10"
+hex = "0.4"
+js-sys = "0.3"
+leptos = { version = "0.6", features = ["csr"] }
+leptos_router = { version = "0.6", features = ["csr"] }
 
 [dependencies.web-sys]
-version = "0.3.69"
+version = "0.3"
 features = [
     "Clipboard",
     "Document",
