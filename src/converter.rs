@@ -1,5 +1,5 @@
-use leptos::{html::Input, *};
-use leptos_router::*;
+use leptos::{html::Input, prelude::*};
+use leptos_router::hooks;
 use web_sys::KeyboardEvent;
 
 use crate::utils;
@@ -13,24 +13,27 @@ const NETWORKS: [(&str, u16, bool); 4] = [
 
 #[component]
 pub(crate) fn Converter() -> impl IntoView {
-    let (checkbox, set_checkbox) = create_signal(false);
-    let checkbox_ref: NodeRef<Input> = create_node_ref();
+    let (checkbox, set_checkbox) = signal(false);
+    let checkbox_ref = NodeRef::<Input>::new();
 
-    let params = use_params_map();
-    let param_input = move || params.with(|params| params.get("input").cloned());
+    let location = hooks::use_location();
+    let mut param = location.hash.get();
+    while param.starts_with('#') {
+        param.remove(0);
+    }
 
-    let (input, _) = create_signal(param_input().unwrap_or_default());
-    let input_ref: NodeRef<Input> = create_node_ref();
+    let (input, _) = signal(param);
+    let input_ref = NodeRef::<Input>::new();
 
-    let (error, set_error) = create_signal("".to_string());
+    let (error, set_error) = signal("".to_string());
 
-    let (prefix, set_prefix) = create_signal(0_u16);
-    let prefix_ref: NodeRef<Input> = create_node_ref();
+    let (prefix, set_prefix) = signal(0_u16);
+    let prefix_ref = NodeRef::<Input>::new();
 
-    let (key_prefix, set_key_prefix) = create_signal(0_u16);
-    let (public_key, set_public_key) = create_signal("".to_string());
-    let (custom, set_custom) = create_signal("".to_string());
-    let networks = NETWORKS.map(|_| create_signal("".to_string()));
+    let (key_prefix, set_key_prefix) = signal(0_u16);
+    let (public_key, set_public_key) = signal("".to_string());
+    let (custom, set_custom) = signal("".to_string());
+    let networks = NETWORKS.map(|_| signal("".to_string()));
 
     let convert = move || {
         set_error.set("".to_string());
@@ -103,6 +106,8 @@ pub(crate) fn Converter() -> impl IntoView {
         }
     };
 
+    let navigate = hooks::use_navigate();
+
     view! {
         <>
             // Input
@@ -160,24 +165,35 @@ pub(crate) fn Converter() -> impl IntoView {
 
             // Buttons
             <div class="buttons">
-                <button class="button is-info is-primary" on:click=move |_| convert()>
+                <button
+                    class="button is-info is-primary"
+                    on:click=move |_| {
+                        convert();
+                        navigate("/", Default::default())
+                    }
+                >
+
                     <span class="icon">
                         <i class="fas fa-sync"></i>
                     </span>
                     <span>"Convert"</span>
                 </button>
-                <button class="button is-light" on:click=on_alice>
+                <a
+                    class="button is-light"
+                    href="#5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"
+                    on:click=on_alice
+                >
                     <span class="icon">
                         <i class="fas fa-user"></i>
                     </span>
                     <span>"Alice"</span>
-                </button>
-                <button class="button is-danger" on:click=move |_| clear()>
+                </a>
+                <a class="button is-danger" href="/" on:click=move |_| clear()>
                     <span class="icon">
                         <i class="fas fa-times"></i>
                     </span>
                     <span>"Clear"</span>
-                </button>
+                </a>
             </div>
 
             // Output
@@ -204,11 +220,11 @@ pub(crate) fn Converter() -> impl IntoView {
 #[component]
 fn Address(
     title: &'static str,
-    prefix: MaybeSignal<u16>,
+    prefix: Signal<u16>,
     value: ReadSignal<String>,
     #[prop(optional)] subscan: bool,
 ) -> impl IntoView {
-    let address_ref: NodeRef<Input> = create_node_ref();
+    let address_ref = NodeRef::<Input>::new();
 
     let on_copy = move |_| {
         if let Some(element) = address_ref.get() {

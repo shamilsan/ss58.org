@@ -1,6 +1,6 @@
 [package]
 name = "ss58-org"
-version = "0.2.3"
+version = "0.2.4"
 edition = "2021"
 
 [dependencies]
@@ -8,8 +8,8 @@ base58 = "0.2"
 blake2 = "0.10"
 hex = "0.4"
 js-sys = "0.3"
-leptos = { version = "0.6", features = ["csr"] }
-leptos_router = { version = "0.6", features = ["csr"] }
+leptos = { version = "0.7", features = ["csr"] }
+leptos_router = "0.7"
 
 [dependencies.web-sys]
 version = "0.3"
