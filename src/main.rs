@@ -1,10 +1,13 @@
 use js_sys::Date;
-use leptos::*;
-use leptos_router::*;
+use leptos::prelude::*;
+use leptos_router::{
+    components::{Route, Router, Routes},
+    path,
+};
 
-mod converter;
 use converter::Converter;
 
+mod converter;
 mod utils;
 
 #[component]
@@ -15,9 +18,8 @@ fn App() -> impl IntoView {
         <div class="container">
             <div class="box">
                 <Router>
-                    <Routes>
-                        <Route path="/" view=Converter/>
-                        <Route path=":input" view=Converter/>
+                    <Routes fallback=|| "Not found.">
+                        <Route path=path!("/") view=Converter/>
                     </Routes>
                 </Router>
             </div>
