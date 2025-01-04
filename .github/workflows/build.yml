@@ -37,15 +37,15 @@ jobs:
         run: trunk build --release
 
       - name: Setup GitHub Pages
-        # if: github.event_name == 'push'
+        if: github.event_name == 'push'
         uses: actions/configure-pages@v5
 
       - name: Upload Pages artifact
-        # if: github.event_name == 'push'
+        if: github.event_name == 'push'
         uses: actions/upload-pages-artifact@v3
         with:
             path: dist
 
       - name: Deploy to GitHub Pages
-        # if: github.event_name == 'push'
+        if: github.event_name == 'push'
         uses: actions/deploy-pages@v4
