@@ -39,19 +39,16 @@ jobs:
       - name: Build
         run: trunk build --release
 
-      - name: Optimize WASM
-        run: find dist -name "*.wasm" -exec wasm-opt {} -o {} -Oz -c --dae --dce --rse -s 4 --vacuum \;
-
       - name: Setup GitHub Pages
-        if: github.event_name == 'push'
+        # if: github.event_name == 'push'
         uses: actions/configure-pages@v5
 
       - name: Upload Pages artifact
-        if: github.event_name == 'push'
+        # if: github.event_name == 'push'
         uses: actions/upload-pages-artifact@v3
         with:
             path: dist
 
       - name: Deploy to GitHub Pages
-        if: github.event_name == 'push'
+        # if: github.event_name == 'push'
         uses: actions/deploy-pages@v4

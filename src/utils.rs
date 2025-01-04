@@ -93,6 +93,6 @@ pub fn copy(text: &str) {
     web_sys::window()
         .and_then(|win| win.document())
         .and_then(|doc| doc.default_view())
-        .and_then(|win| win.navigator().clipboard())
+        .map(|win| win.navigator().clipboard())
         .map(|clipboard| clipboard.write_text(text));
 }
