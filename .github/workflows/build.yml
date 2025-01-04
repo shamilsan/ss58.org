@@ -30,9 +30,6 @@ jobs:
         with:
           version: latest
 
-      - name: Install WASM Binary Toolkit
-        run: sudo apt-get install -y binaryen
-
       - name: Cache
         uses: Swatinem/rust-cache@v2
 
