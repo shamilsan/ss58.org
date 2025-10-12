@@ -4,11 +4,12 @@ use web_sys::KeyboardEvent;
 
 use crate::utils;
 
-const NETWORKS: [(&str, u16, bool); 4] = [
+const NETWORKS: [(&str, u16, bool); 5] = [
     ("Polkadot", 0, true),
     ("Kusama", 2, true),
     ("Substrate", 42, false),
     ("Vara", 137, true),
+    ("Ǧ1", 4450, true),
 ];
 
 #[component]
