@@ -8,8 +8,8 @@ base58 = "0.2"
 blake2 = "0.10"
 hex = "0.4"
 js-sys = "0.3"
-leptos = { version = "0.7", features = ["csr"] }
-leptos_router = "0.7"
+leptos = { version = "0.8", features = ["csr"] }
+leptos_router = "0.8"
 
 [dependencies.web-sys]
 version = "0.3"
