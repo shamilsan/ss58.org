@@ -867,9 +867,9 @@ dependencies = [
 
 [[package]]
 name = "leptos_router"
-version = "0.8.14"
+version = "0.8.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "253962f9371a2fcf432eff991efc6da58de383c1cbcc332aaff7b8b22f6d778e"
+checksum = "318c035b5995324c2f60900978ac67da3b21e6062a6e904f8b93b38eddc4e3a2"
 dependencies = [
  "any_spawner",
  "either_of",
@@ -1536,9 +1536,9 @@ dependencies = [
 
 [[package]]
 name = "tachys"
-version = "0.2.17"
+version = "0.2.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d554eae4a01fc17427ad87ae25867633517f1e80594b63b63cfdd23db8cb2273"
+checksum = "a92ba81187437cc5df4281f2326a2e13cc81e8f96448292d1112388e2025ca66"
 dependencies = [
  "any_spawner",
  "async-trait",
